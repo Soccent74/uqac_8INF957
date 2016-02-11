@@ -5,25 +5,19 @@ package uqac_8INF957;
 import java.io.*;
 import java.net.*;
 /**
- * @author benja
+ * @author Benjamin Bourgeaux et Lucas Hélaine
  *
  */
 public class applicationClient {
-	public static void main(String args[]) throws Exception
-	{
-		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-		DatagramSocket clientSocket = new DatagramSocket();
-		InetAddress IPAddress = InetAddress.getByName("hostname");
-		byte[] sendData = new byte[1024];
-		byte[] receiveData = new byte[1024];
-		String sentence = inFromUser.readLine();
-		sendData = sentence.getBytes();
-		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
-		clientSocket.send(sendPacket);
-		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-		clientSocket.receive(receivePacket);
-		String modifiedSentence = new String(receivePacket.getData());
-		System.out.println("FROM SERVER:" + modifiedSentence);
-		clientSocket.close();
+	public static void main(String[] zero) {
+		Socket socket;
+		try {
+			socket = new Socket(InetAddress.getLocalHost(),2009);	
+			socket.close();
+		}catch (UnknownHostException e) {
+			e.printStackTrace();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
