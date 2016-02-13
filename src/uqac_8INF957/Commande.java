@@ -1,6 +1,3 @@
-/**
- * 
- */
 package uqac_8INF957;
 import java.io.*;
 import java.util.Arrays;
@@ -23,6 +20,7 @@ public class Commande implements Serializable {
 	private String[] tabpar = new String[taille]; //tableau des paramètres
 	private String[] tabval = new String[taille]; //tableau des valeurs des paramètres
 	private int nb_args = 0; //nombre d'arguments dans la commande
+	private int nb_param = 0; //nombre de paramètres
 
 	public Commande(String commande){
 
@@ -61,12 +59,11 @@ public class Commande implements Serializable {
 			this.identificateur = str[1];
 			this.nom_fonction = str[2];
 			if(nb_args == 4){
-				System.out.println(str[3]);
 				String[] param = str[3].split(",");
-				for(int i = 0; i < 2; i++){
+				nb_param = param.length;
+				for(int i = 0; i < nb_param; i++){
 					String[] tampon = param[i].split(":");
-					System.out.println(tampon[i]);
-					for(int j = 0; j < 2; j++){
+					for(int j = 0; j < nb_param; j++){
 						this.tabpar[i] = tampon[0];
 						this.tabval[i] = tampon[1];
 					}
@@ -129,16 +126,17 @@ public class Commande implements Serializable {
 		return tabval;}
 	
 	/*public static void main (String [] arg){
-		final String defaut = "fonction#mathilde#getMoyenne#";
+		final String defaut = "fonction#mathilde#inscrisDansCours#ca.uqac.registraire.Cours:ID(8inf853)";
+		//System.out.println(defaut);
         Commande test= new Commande(defaut);
-        System.out.println(test.getType_commande());
+        //System.out.println(test.getType_commande());
         //System.out.println(test.getNom_classe());
 		//System.out.println(Arrays.toString(test.getChemin_source()));
         //System.out.println(test.getChemin_classe());
-        System.out.println(test.getIdentificateur());
+        //System.out.println(test.getIdentificateur());
         //System.out.println(test.getNom_attribut());
         //System.out.println(test.getValeur());
-        System.out.println(test.getNom_fonction());
+        //System.out.println(test.getNom_fonction());
         System.out.println(Arrays.toString(test.getTabpar()));
         System.out.println(Arrays.toString(test.getTabval()));        
    }*/
