@@ -51,7 +51,7 @@ public class applicationServer{
 				
 				Commande commandeRecu = (Commande) objetRecu;
 				System.out.println("objet casté");
-				 
+				
 				System.out.println("Serveur recoit: " + commandeRecu.getType_commande());
 				
 			}while(objetRecu!=null);
