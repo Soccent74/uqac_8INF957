@@ -1,5 +1,6 @@
 package uqac_8INF957;
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * @author Benjamin Bourgeaux et Lucas Helaine
@@ -8,7 +9,7 @@ import java.io.*;
 public class Commande implements Serializable {
 
 	private String type_commande = ""; //type de la commande
-	private int taille = 2; //nombre de sources maximum
+	private int taille = 1; //nombre de sources maximum
 	private String[] chemin_source = new String[taille]; //chemin des fichiers sources
 	private String chemin_classe = ""; //chemin du fichier classe
 	private String nom_classe = ""; //nom de la classe
@@ -28,7 +29,8 @@ public class Commande implements Serializable {
 		if((str[0].equals("compilation"))&&(nb_args == 3)){ //Si le premier terme est "compilation", je récupère les valeurs
 			this.type_commande = str[0];
 			String[] source = str[1].split(",");
-			for(int i = 0; i < 2; i++){
+			taille = source.length;
+			for(int i = 0; i < taille+1; i++){
 				this.chemin_source[i] = source[i];
 			}
 			this.chemin_classe = str[2];
@@ -123,6 +125,11 @@ public class Commande implements Serializable {
 		this.tabval = tabval;}
 	public String[] getTabval() { //Getter de tabval
 		return tabval;}
+	
+	public void setTaille(int taille) { //Setter de taille
+		this.taille = taille;}
+	public int getTaille() { //Getter de taille
+		return taille;}
 	
 	/*public static void main (String [] arg){
 		final String defaut = "fonction#mathilde#inscrisDansCours#ca.uqac.registraire.Cours:ID(8inf853)";
