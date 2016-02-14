@@ -4,7 +4,6 @@
 package uqac_8INF957;
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 import uqac_8INF957.Commande;
 /**
  * @author Benjamin Bourgeaux et Lucas Hélaine
@@ -12,11 +11,24 @@ import uqac_8INF957.Commande;
  */
 public class applicationClient {
     /** ATTRIBUT **/
-	private String fichCommandes = null;
-	private String fichSortie = null;
+	static String fichier = null;
+	static String fichSortie = null;
 	static BufferedReader br = null;
 	static InputStream ips = null;
 	static InputStreamReader ipsr  = null;
+	static Commande prochaine;
+	
+	
+	/** GETTERS **/
+//	public String getFichier() {
+//		return fichier;
+//	}
+//	/** SETTERS **/
+//	public void setFichier(String fichier) {
+//		this.fichier = fichier;
+//	}
+	
+	
 	/**
     * prend le fichier contenant la liste des commandes, et le charge dans une
     * variable du type Commande qui est retournée
@@ -28,7 +40,7 @@ public class applicationClient {
     
     /**
     * initialise : ouvre les différents fichiers de lecture et écriture
-     * @throws FileNotFoundException 
+    * @throws FileNotFoundException 
     */
     public static void initialise(String fichierCommande) throws FileNotFoundException {
 	    try{	
@@ -49,9 +61,33 @@ public class applicationClient {
     * souhaitez, vous pourriez écrire six fonctions spécialisées, une par type de commande 
 	* décrit plus haut, qui seront appelées par  traiteCommande(Commande uneCommande)
     */
-//    public Object traiteCommande(Commande uneCommande) {
-//
-//    }
+    public static void traiteCommande(Commande uneCommande) {
+		Socket socket;
+		try {
+			// Ouverture de la socket client. :)
+			socket = new Socket(InetAddress.getLocalHost(),2009);	
+			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+			 // Permet de vider le buffer. 
+			out.flush();
+	       
+//			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+	        
+			// 
+			out.writeObject(uneCommande);
+	        // Permet de vider le buffer. 
+	        out.flush();
+			
+			
+			
+			
+			// Fermeture de la socket client.
+			socket.close();
+		}catch (UnknownHostException e) {
+			e.printStackTrace();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
     
     
     /**
@@ -76,31 +112,21 @@ public class applicationClient {
     * 3) nom fichier commandes, et 4) nom fichier sortie. Cette méthode doit créer une 
     * instance de la classe ApplicationClient, l’initialiser, puis exécuter le scénario
     */
-
     public static void main(String[] zero) {
-		String fichier ="commandes.txt";
-		
-		
+    	fichier = "commandes.txt";
 		//lecture du fichier texte	
 		try{
 			initialise(fichier);
 			String ligne;
 			while ((ligne=br.readLine())!=null){
-				System.out.println(ligne);
+				prochaine = saisisCommande(ligne);
+				traiteCommande(prochaine);
 			}
 			br.close(); 
 		}catch (Exception e){
 			System.out.println(e.toString());
 		}
 		
-//		Socket socket;
-//		try {
-//			socket = new Socket(InetAddress.getLocalHost(),2009);	
-//			socket.close();
-//		}catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		}catch (IOException e) {
-//			e.printStackTrace();
-//		}
+
 	}
 }
