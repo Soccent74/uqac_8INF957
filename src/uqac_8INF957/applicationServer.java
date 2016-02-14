@@ -68,18 +68,9 @@ public class applicationServer{
 		        out.close();
 				socketduserveur.close();
 			}while(objetRecu!=null);
-
-			
-	        
-	        
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+        } catch (IOException e) {
 			e.printStackTrace();
 		}
- 
-        
-        
     }
     
     /**
