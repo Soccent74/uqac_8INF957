@@ -13,7 +13,10 @@ import java.util.*;
  *
  */
 public class applicationServer{
-
+	/**ATTRIBUT **/
+	static ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
+	
+	/** METHODES **/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
 		try {
 	    	socketserver = new ServerSocket(port);
@@ -29,7 +32,7 @@ public class applicationServer{
     * le client, et appellera traiterCommande(Commande uneCommande)
     */         
     public void aVosOrdres() {
-    	ServerSocket socketserver;
+//    	ServerSocket socketserver;
 		Socket socketduserveur;
     	final BufferedReader in;
     	final PrintWriter out;
