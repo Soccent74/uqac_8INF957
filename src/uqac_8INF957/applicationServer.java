@@ -17,6 +17,9 @@ public class applicationServer{
 	/**ATTRIBUT **/
 	public ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
 	private Class classe;
+	private int tailletab = 2;
+	private Cours[] tabcours = new Cours[tailletab];
+	private Etudiant[] tabetudiant = new Etudiant[tailletab];
 	
 	/** METHODES **/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
@@ -63,24 +66,16 @@ public class applicationServer{
 //				String accuser = traiteCommande(commandeRecu);
 				out.writeObject("Le serveur confirme le traitement de la commande sans incident.");
 				out.flush();
-			
-			/** On ferme les flux et la socket. **/
+
+				/** On ferme les flux et la socket. **/
 				in.close();
-		        out.close();
+				out.close();
 				socketduserveur.close();
 			}while(objetRecu!=null);
-
-			
-	        
-	        
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
- 
-        
-        
+        } catch (IOException e) {
+        	// TODO Auto-generated catch block
+        	e.printStackTrace();
+        }
     }
     
     /**
@@ -96,6 +91,7 @@ public class applicationServer{
     			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
     			traiterCompilation(cheminsource);
     		}
+    		//System.out.println("La compilation ne marche pas");
     	}
     	else if(nom_commande.equals("chargement")){
     		traiterChargement(uneCommande.getNom_classe());
@@ -109,9 +105,12 @@ public class applicationServer{
     		}
     	}
     	else if(nom_commande.equals("lecture")){
-    		/*if(uneCommande.getIdentificateur().equals("ca.uqac.registraire.Cours")){
-    			traiterLecture(nouveau_cours, uneCommande.getNom_attribut());
-    		}*/
+    		if(uneCommande.getIdentificateur().matches("[0-9]")){
+    			//traiterLecture(nouveau_cours, uneCommande.getNom_attribut());
+    		}
+    		else{
+    			//traiterLecture(nouvel_etudiant, uneCommande.getNom_attribut());
+    		}
     	}
     	else if(nom_commande.equals("ecriture")){
     		//traiterEcriture(Object pointeurObjet, uneCommande.getNom_attribut(), Object valeur);
@@ -120,7 +119,7 @@ public class applicationServer{
     		//traiterAppel(Object pointeurObjet, uneCommande.getNom_fonction(), uneCommande.getTabpar(), Object[] valeurs);
     	}
     	else{
-    		
+    		System.out.println("Erreur dans la commande");
     	}
     }
     /**
@@ -130,6 +129,9 @@ public class applicationServer{
     public void traiterLecture(Object pointeurObjet, String attribut) {
     	if(attribut.equals("")){
     		//String titre = pointeurObjet.getTitre();
+    	}
+    	else if(attribut.equals("")){
+    		//String nom = pointeurObjet.getNom();
     	}
     	
     }
@@ -147,13 +149,25 @@ public class applicationServer{
 	* s’est faite correctement.
     */
     public void traiterCreation(Class classeDeLobjet, String identificateur) {
+    	int i = 0;
     	if(classeDeLobjet == Etudiant.class){
     		Etudiant nouvel_etudiant = new Etudiant(identificateur);
+    		tabetudiant[i] = nouvel_etudiant;
     		System.out.println("objet Etudiant bien créé");
+    		i++;
+    		if(i > tailletab){
+    			System.out.println("Il y a trop d'etudiants");
+    		}
     	}
     	else if(classeDeLobjet == Cours.class){
+    		int j = 0;
     		Cours nouveau_cours = new Cours(identificateur);
+    		tabcours[j] = nouveau_cours;
     		System.out.println("objet Cours bien créé");
+    		j++;
+    		if(j > tailletab){
+    			System.out.println("Il y a trop de cours");
+    		}
     	}
     }
 
