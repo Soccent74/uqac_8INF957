@@ -73,9 +73,14 @@ public class applicationServer{
 				socketduserveur.close();
 			}while(objetRecu!=null);
         } catch (IOException e) {
+<<<<<<< HEAD
         	// TODO Auto-generated catch block
         	e.printStackTrace();
         }
+=======
+			e.printStackTrace();
+		}
+>>>>>>> origin/master
     }
     
     /**
