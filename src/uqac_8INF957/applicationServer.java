@@ -2,8 +2,7 @@
  * 
  */
 package uqac_8INF957;
-import uqac_8INF957.Commande;
-
+import uqac_8INF957.*;
 import java.io.*;
 import java.io.IOException;
 import java.net.*;
@@ -15,6 +14,7 @@ import java.util.*;
 public class applicationServer{
 	/**ATTRIBUT **/
 	static ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
+	//Cours nouveau_cours = new Cours();
 	
 	/** METHODES **/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
@@ -67,22 +67,33 @@ public class applicationServer{
     	nom_commande = uneCommande.getType_commande();
 
     	if(nom_commande.equals("compilation")){
-    		
+    		for(int i = 0; i < uneCommande.getTaille();i++){
+    			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
+    			traiterCompilation(cheminsource); //peu de chances que ça marche
+    		}
     	}
     	else if(nom_commande.equals("chargement")){
-    		
+    		traiterChargement(uneCommande.getNom_classe());
     	}
     	else if(nom_commande.equals("creation")){
-
+    		if(uneCommande.getNom_classe().equals("ca.uqac.registraire.Cours")){
+    			//traiterCreation(Cours.class, uneCommande.getIdentificateur());
+    		}
+    		else if(uneCommande.getNom_classe().equals("ca.uqac.registraire.Etudiant")){
+    			//traiterCreation(Etudiant.class, uneCommande.getIdentificateur());
+    		}
     	}
     	else if(nom_commande.equals("lecture")){
     		//traiterLecture(Object pointeurObjet, uneCommande.getNom_attribut());
     	}
     	else if(nom_commande.equals("ecriture")){
-    		//traiterEcriture(Object pointeurObjet, uneCommande.getNom_attribut(), Object valeur)
+    		//traiterEcriture(Object pointeurObjet, uneCommande.getNom_attribut(), Object valeur);
     	}
     	else if(nom_commande.equals("fonction")){
-
+    		//traiterAppel(Object pointeurObjet, uneCommande.getNom_fonction(), uneCommande.getTabpar(), Object[] valeurs);
+    	}
+    	else{
+    		
     	}
     }
     
@@ -107,7 +118,9 @@ public class applicationServer{
 	* s’est faite correctement.
     */
     public void traiterCreation(Class classeDeLobjet, String identificateur) {
-    	
+    	if(classeDeLobjet == Etudiant.class){
+    		Etudiant nouvel_etudiant = new Etudiant(identificateur);
+    	}
     }
 
     /**
@@ -134,10 +147,9 @@ public class applicationServer{
 	* fonction est renvoyé par le serveur au client (ou le message que tout s’est bien 
 	* passé)
     **/
-    public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, 
-Object[] valeurs) {
+    /*public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, Object[] valeurs) {
     	
-    }
+    }*/
 
 	
 	public static void main(String[] arg) {
