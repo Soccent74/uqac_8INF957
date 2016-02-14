@@ -35,35 +35,45 @@ public class applicationServer{
      * @throws ClassNotFoundException 
     */         
     public void aVosOrdres() throws ClassNotFoundException {
-        System.out.println("Socket serveur: " + socketserver);
+    /** Variable de la fonction. **/
+    	System.out.println("Socket serveur: " + socketserver);
         Socket socketduserveur;
         Object objetRecu;
         ObjectInputStream in;
-		try {
+        ObjectOutputStream out;
+		
+    /** On essaye d'accepter les connections et de recevoir, traiter, renvoyer les données. **/
+        try {
+        /** Boucle permettant d'ouvrir une nouvelle socket pour chaque commande du client.  **/
 			do{
+				// On accepte les connections entrantes. 
 				socketduserveur = this.socketserver.accept();
 				System.out.println("Serveur a accepte connexion: " + socketduserveur);
 				
+			/** On gère le flux d'entrées provenant du client. **/
 				in = new ObjectInputStream(socketduserveur.getInputStream());
-				System.out.println("récupération objet"); 
-		        
-				objetRecu = in.readObject();
-				System.out.println("Server : objet recu");
-				
+				objetRecu = in.readObject();				
 				Commande commandeRecu = (Commande) objetRecu;
-				System.out.println("objet casté");
-				
+				// Affichage du type de commande pour contrôle réception.
 				System.out.println("Serveur recoit: " + commandeRecu.getType_commande());
 				
+			/** On gère le flux de sortie du server qui sert aux confirmations. **/
+				out = new ObjectOutputStream(socketduserveur.getOutputStream());
+				out.flush();
+//				String accuser = traiteCommande(commandeRecu);
+				out.writeObject("Le serveur confirme le traitement de la commande sans incident.");
+				out.flush();
+			
+			/** On ferme les flux et la socket. **/
+				in.close();
+		        out.close();
+				socketduserveur.close();
 			}while(objetRecu!=null);
-			in.close();
-//	        out.close();
-	        socketduserveur.close();
-//	        ObjectOutputStream out = new ObjectOutputStream(socketduserveur.getOutputStream());
-//	        out.flush();
-//	        int[] tableauAEmettre = {7, 8, 9};
-//	 		out.writeObject(tableauAEmettre);
-//	        out.flush();
+
+			
+	        
+	        
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

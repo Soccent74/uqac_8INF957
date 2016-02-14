@@ -120,32 +120,32 @@ public class applicationClient {
 		try {
 			socket = new Socket(InetAddress.getLocalHost(), 2009);
 			System.out.println("Socket client: " + socket);
+			
+			/** Gestion de l'envoie de la commande. **/
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 	        out.flush();
-	 
-//	        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-	 
-	        System.out.println("Client a cree les flux");
-	 
 	        out.writeObject(uneCommande);
 	        out.flush();
-	 
-	        System.out.println("Client: donnees emises");
-	 
-//	        Object objetRecu = in.readObject();
 	        
-//	        System.out.println("Client recoit: " + Arrays.toString(tableauRecu));
-	 
-//	        in.close();
+	        /** Réception de la réponse du serveur. **/
+	        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+	        Object objetRecu = in.readObject();
+	        objetRecu = (String)objetRecu;
+	        System.out.println("Client recoit: " + objetRecu);
+	        
+	        
+	        /** Fermeture des différents flux.**/ 
+	        in.close();
 	        out.close();
-	        System.out.println("Client : out close");
 	        socket.close();
-	        System.out.println("Client : socket close");
 	        
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}      
