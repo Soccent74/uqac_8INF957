@@ -72,10 +72,10 @@ public class applicationServer{
         
     }
     
-/*   *//**
+    /**
     * prend une Commande dument formattée, et la traite. Dépendant du type de commande, 
     * elle appelle la méthode spécialisée
-    *//*
+    */
     public void traiteCommande(Commande uneCommande) {
     	String nom_commande;
     	nom_commande = uneCommande.getType_commande();
@@ -109,7 +109,7 @@ public class applicationServer{
     	else{
     		
     	}
-    }*/
+    }
     
 	public static void main(String[] arg) {
 		applicationServer serv = new applicationServer(2009);
