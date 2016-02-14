@@ -4,36 +4,90 @@
 package uqac_8INF957;
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
+
 import uqac_8INF957.Commande;
 /**
  * @author Benjamin Bourgeaux et Lucas Hélaine
  *
  */
 public class applicationClient {
-    /** ATTRIBUT **/
-	static String fichier = null;
-	static String fichSortie = null;
-	static BufferedReader br = null;
-	static InputStream ips = null;
-	static InputStreamReader ipsr  = null;
-	static Commande prochaine;
+    
+	/** ATTRIBUT **/
+	private String fichier;
+	private String fichSortie;
+	private BufferedReader br;
+	private InputStream ips;
+	private InputStreamReader ipsr;
+	private Commande prochaine;
 	
+	/**
+	 * CONSTRUCTEUR
+	 * **/
+	public applicationClient() {
+		this.fichier = null;
+		this.fichSortie = null;
+		this.br = null;
+		this.ips = null;
+		this.ipsr = null;
+		this.prochaine = null;
+	}
 	
-	/** GETTERS **/
-//	public String getFichier() {
-//		return fichier;
-//	}
-//	/** SETTERS **/
-//	public void setFichier(String fichier) {
-//		this.fichier = fichier;
-//	}
+	/** 
+	 * GETTERS 
+	 * **/
+	public String getFichier() {
+		return fichier;
+	}
+	public BufferedReader getBr() {
+		return br;
+	}
+	public String getFichSortie() {
+		return fichSortie;
+	}
+	public InputStream getIps() {
+		return ips;
+	}
+	public Commande getProchaine() {
+		return prochaine;
+	}
+	public InputStreamReader getIpsr() {
+		return ipsr;
+	}
 	
+	/** 
+	 * SETTERS 
+	 * **/
+	public void setFichier(String fichier) {
+		this.fichier = fichier;
+	}
+	
+	public void setProchaine(Commande prochaine) {
+		this.prochaine = prochaine;
+	}
+	
+	public void setBr(BufferedReader br) {
+		this.br = br;
+	}
+	public void setFichSortie(String fichSortie) {
+		this.fichSortie = fichSortie;
+	}
+	public void setIps(InputStream ips) {
+		this.ips = ips;
+	}
+	public void setIpsr(InputStreamReader ipsr) {
+		this.ipsr = ipsr;
+	}
+	
+	/**
+	 * METHODES
+	 */
 	
 	/**
     * prend le fichier contenant la liste des commandes, et le charge dans une
     * variable du type Commande qui est retournée
     */         
-    public static Commande saisisCommande(String line) {
+    public Commande saisisCommande(String line) {
     	Commande ordre = new Commande(line);
 		return ordre;
     }
@@ -42,11 +96,11 @@ public class applicationClient {
     * initialise : ouvre les différents fichiers de lecture et écriture
     * @throws FileNotFoundException 
     */
-    public static void initialise(String fichierCommande) throws FileNotFoundException {
+    public void initialise(String fichierCommande) throws FileNotFoundException {
 	    try{	
-	    	ips = new FileInputStream(fichierCommande); 
-			ipsr = new InputStreamReader(ips);
-			br = new BufferedReader(ipsr);
+	    	this.ips = new FileInputStream(fichierCommande); 
+			this.ipsr = new InputStreamReader(ips);
+			this.br = new BufferedReader(ipsr);
 			
 	    }catch (Exception e){
 			System.out.println(e.toString());
@@ -61,32 +115,40 @@ public class applicationClient {
     * souhaitez, vous pourriez écrire six fonctions spécialisées, une par type de commande 
 	* décrit plus haut, qui seront appelées par  traiteCommande(Commande uneCommande)
     */
-    public static void traiteCommande(Commande uneCommande) {
-		Socket socket;
+    public void traiteCommande(Commande uneCommande) {
+    	Socket socket;
 		try {
-			// Ouverture de la socket client. :)
-			socket = new Socket(InetAddress.getLocalHost(),2009);	
+			socket = new Socket(InetAddress.getLocalHost(), 2009);
+			System.out.println("Socket client: " + socket);
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-			 // Permet de vider le buffer. 
-			out.flush();
-	       
-//			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-	        
-			// 
-			out.writeObject(uneCommande);
-	        // Permet de vider le buffer. 
 	        out.flush();
-			
-			
-			
-			
-			// Fermeture de la socket client.
-			socket.close();
-		}catch (UnknownHostException e) {
+	 
+//	        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+	 
+	        System.out.println("Client a cree les flux");
+	 
+	        out.writeObject(uneCommande);
+	        out.flush();
+	 
+	        System.out.println("Client: donnees emises");
+	 
+//	        Object objetRecu = in.readObject();
+	        
+//	        System.out.println("Client recoit: " + Arrays.toString(tableauRecu));
+	 
+//	        in.close();
+	        out.close();
+	        System.out.println("Client : out close");
+	        socket.close();
+	        System.out.println("Client : socket close");
+	        
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}catch (IOException e) {
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}      
     }
     
     
@@ -113,16 +175,22 @@ public class applicationClient {
     * instance de la classe ApplicationClient, l’initialiser, puis exécuter le scénario
     */
     public static void main(String[] zero) {
-    	fichier = "commandes.txt";
+    	applicationClient client = new applicationClient();
+    	client.setFichier("commandes.txt");
 		//lecture du fichier texte	
-		try{
-			initialise(fichier);
+		System.out.println("Client : Juste avant le try.");
+    	try{
+			client.initialise(client.getFichier());
+			System.out.println("Client : INITIALISE");
 			String ligne;
-			while ((ligne=br.readLine())!=null){
-				prochaine = saisisCommande(ligne);
-				traiteCommande(prochaine);
+			
+			while ((ligne=client.br.readLine())!=null){
+				System.out.println("client ligne = : " + ligne);
+				client.setProchaine(client.saisisCommande(ligne));
+				System.out.println("CLIENT :" + client.getProchaine());
+				client.traiteCommande(client.getProchaine());
 			}
-			br.close(); 
+			client.br.close(); 
 		}catch (Exception e){
 			System.out.println(e.toString());
 		}

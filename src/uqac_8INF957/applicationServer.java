@@ -8,20 +8,21 @@ import java.io.*;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+
+import org.omg.Messaging.SyncScopeHelper;
 /**
  * @author Benjamin Bourgeaux et Lucas Hélaine
  *
  */
 public class applicationServer{
 	/**ATTRIBUT **/
-	static ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
-	
+	public ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
 	/** METHODES **/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
 		try {
 	    	socketserver = new ServerSocket(port);
-	    	System.out.println("Socket créé");
-	    	aVosOrdres();
+	    	System.out.println("Server : Socket créé");
+//	    	aVosOrdres();
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -30,31 +31,44 @@ public class applicationServer{
     * Se met en attente de connexions des clients. Suite aux connexions, elle lit
     * ce qui est envoyé à travers la Socket, recrée l’objet Commande envoyé par
     * le client, et appellera traiterCommande(Commande uneCommande)
+     * @throws ClassNotFoundException 
     */         
-    public void aVosOrdres() {
-//    	ServerSocket socketserver;
-		Socket socketduserveur;
-    	final BufferedReader in;
-    	final PrintWriter out;
-    	final Scanner sc=new Scanner(System.in);
-    	try {
-    	    socketduserveur = socketserver.accept();
-    	    System.out.println("Connexion effectue");
-    	    out = new PrintWriter(socketduserveur.getOutputStream());
-    	    in = new BufferedReader (new InputStreamReader (socketduserveur.getInputStream()));
-    	    String s;
-    	    s = sc.next();
-    	    out.println(s);
-    	    out.flush();    
-    	    String message_client;
-    	    message_client = in.readLine();
-    	    System.out.println("Commande : "+message_client);
-    	    socketserver.close();
-            socketduserveur.close();
-    	    }
-    	catch (IOException e) {
-    	  e.printStackTrace();
-    	}
+    public void aVosOrdres() throws ClassNotFoundException {
+        System.out.println("Socket serveur: " + socketserver);
+        Socket socketduserveur;
+        Object objetRecu;
+        ObjectInputStream in;
+		try {
+			do{
+				socketduserveur = this.socketserver.accept();
+				System.out.println("Serveur a accepte connexion: " + socketduserveur);
+				
+				in = new ObjectInputStream(socketduserveur.getInputStream());
+				System.out.println("récupération objet"); 
+		        
+				objetRecu = in.readObject();
+				System.out.println("Server : objet recu");
+				
+				Commande commandeRecu = (Commande) objetRecu;
+				System.out.println("objet casté");
+				 
+				System.out.println("Serveur recoit: " + commandeRecu.getType_commande());
+				
+			}while(objetRecu!=null);
+			in.close();
+//	        out.close();
+	        socketduserveur.close();
+//	        ObjectOutputStream out = new ObjectOutputStream(socketduserveur.getOutputStream());
+//	        out.flush();
+//	        int[] tableauAEmettre = {7, 8, 9};
+//	 		out.writeObject(tableauAEmettre);
+//	        out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+ 
+        
         
     }
     
@@ -90,42 +104,42 @@ public class applicationServer{
     * traiterLecture : traite la lecture d’un attribut. Renvoies le résultat par le 
 	* socket
     */
-    public void traiterLecture(Object pointeurObjet, String attribut) {
-    
-    }
+//    public void traiterLecture(Object pointeurObjet, String attribut) {
+//    
+//    }
     
     /**
     * traiterEcriture : traite l’écriture d’un attribut. Confirmes au client que l’écriture
 	* s’est faite correctement.
     */
-    public void traiterEcriture(Object pointeurObjet, String attribut, Object valeur) {
-    	
-    }
+//    public void traiterEcriture(Object pointeurObjet, String attribut, Object valeur) {
+//    	
+//    }
 
     /**
     * traiterCreation : traite la création d’un objet. Confirme au client que la création
 	* s’est faite correctement.
     */
-    public void traiterCreation(Class classeDeLobjet, String identificateur) {
-    	
-    }
+//    public void traiterCreation(Class classeDeLobjet, String identificateur) {
+//    	
+//    }
 
     /**
     * traiterChargement : traite le chargement d’une classe. Confirmes au client que la création
 	* s’est faite correctement.
     */
-    public void traiterChargement(String nomQualifie) {
-    	
-    }
+//    public void traiterChargement(String nomQualifie) {
+//    	
+//    }
 
     /**
     * traiterCompilation : traite la compilation d’un fichier source java. Confirme au client
 	* que la compilation s’est faite correctement. Le fichier source est donné par son chemin
 	* relatif par rapport au chemin des fichiers sources.
     */
-    public void traiterCompilation(String cheminRelatifFichierSource) {
-    	
-    }
+//    public void traiterCompilation(String cheminRelatifFichierSource) {
+//    	
+//    }
 
     /**
     * traiterAppel : traite l’appel d’une méthode, en prenant comme argument l’objet
@@ -134,14 +148,20 @@ public class applicationServer{
 	* fonction est renvoyé par le serveur au client (ou le message que tout s’est bien 
 	* passé)
     **/
-    public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, 
-Object[] valeurs) {
-    	
-    }
+//    public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, 
+//Object[] valeurs) {
+//    	
+//    }
 
 	
 	public static void main(String[] arg) {
 		applicationServer serv = new applicationServer(2009);
+		try {
+			serv.aVosOrdres();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }// Fin du main.
 	
 }
