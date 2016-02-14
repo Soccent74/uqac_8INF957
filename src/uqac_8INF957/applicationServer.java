@@ -15,13 +15,8 @@ import org.omg.Messaging.SyncScopeHelper;
  */
 public class applicationServer{
 	/**ATTRIBUT **/
-<<<<<<< HEAD
-	static ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
-	//Cours nouveau_cours = new Cours();
-	
-=======
 	public ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
->>>>>>> origin/master
+	
 	/** METHODES **/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
 		try {
@@ -77,10 +72,10 @@ public class applicationServer{
         
     }
     
-   /**
+/*   *//**
     * prend une Commande dument formattée, et la traite. Dépendant du type de commande, 
     * elle appelle la méthode spécialisée
-    */
+    *//*
     public void traiteCommande(Commande uneCommande) {
     	String nom_commande;
     	nom_commande = uneCommande.getType_commande();
@@ -88,11 +83,11 @@ public class applicationServer{
     	if(nom_commande.equals("compilation")){
     		for(int i = 0; i < uneCommande.getTaille();i++){
     			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
-    			traiterCompilation(cheminsource); //peu de chances que ça marche
+    			//traiterCompilation(cheminsource); //peu de chances que ça marche
     		}
     	}
     	else if(nom_commande.equals("chargement")){
-    		traiterChargement(uneCommande.getNom_classe());
+    		//traiterChargement(uneCommande.getNom_classe());
     	}
     	else if(nom_commande.equals("creation")){
     		if(uneCommande.getNom_classe().equals("ca.uqac.registraire.Cours")){
@@ -114,76 +109,8 @@ public class applicationServer{
     	else{
     		
     	}
-    }
-    
-    /**
-    * traiterLecture : traite la lecture d’un attribut. Renvoies le résultat par le 
-	* socket
-    */
-//    public void traiterLecture(Object pointeurObjet, String attribut) {
-//    
-//    }
-    
-    /**
-    * traiterEcriture : traite l’écriture d’un attribut. Confirmes au client que l’écriture
-	* s’est faite correctement.
-    */
-//    public void traiterEcriture(Object pointeurObjet, String attribut, Object valeur) {
-//    	
-//    }
-
-    /**
-    * traiterCreation : traite la création d’un objet. Confirme au client que la création
-	* s’est faite correctement.
-    */
-<<<<<<< HEAD
-    public void traiterCreation(Class classeDeLobjet, String identificateur) {
-    	if(classeDeLobjet == Etudiant.class){
-    		Etudiant nouvel_etudiant = new Etudiant(identificateur);
-    	}
-    }
-=======
-//    public void traiterCreation(Class classeDeLobjet, String identificateur) {
-//    	
-//    }
->>>>>>> origin/master
-
-    /**
-    * traiterChargement : traite le chargement d’une classe. Confirmes au client que la création
-	* s’est faite correctement.
-    */
-//    public void traiterChargement(String nomQualifie) {
-//    	
-//    }
-
-    /**
-    * traiterCompilation : traite la compilation d’un fichier source java. Confirme au client
-	* que la compilation s’est faite correctement. Le fichier source est donné par son chemin
-	* relatif par rapport au chemin des fichiers sources.
-    */
-//    public void traiterCompilation(String cheminRelatifFichierSource) {
-//    	
-//    }
-
-    /**
-    * traiterAppel : traite l’appel d’une méthode, en prenant comme argument l’objet
-	* sur lequel on effectue l’appel, le nom de la fonction à appeler, un tableau de nom de 
-	* types des arguments, et un tableau d’arguments pour la fonction. Le résultat de la 
-	* fonction est renvoyé par le serveur au client (ou le message que tout s’est bien 
-	* passé)
-    **/
-<<<<<<< HEAD
-    /*public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, Object[] valeurs) {
-    	
     }*/
-=======
-//    public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, 
-//Object[] valeurs) {
-//    	
-//    }
->>>>>>> origin/master
-
-	
+    
 	public static void main(String[] arg) {
 		applicationServer serv = new applicationServer(2009);
 		try {

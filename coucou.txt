@@ -32,3 +32,12 @@ public void traiteCommande(Commande uneCommande) {
     		
     	}
     }
+    
+    
+    
+    
+    public void traiterCreation(Class classeDeLobjet, String identificateur) {
+    	if(classeDeLobjet == Etudiant.class){
+    		Etudiant nouvel_etudiant = new Etudiant(identificateur);
+    	}
+    }
