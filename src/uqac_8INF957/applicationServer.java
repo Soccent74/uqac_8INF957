@@ -16,6 +16,7 @@ import org.omg.Messaging.SyncScopeHelper;
 public class applicationServer{
 	/**ATTRIBUT **/
 	public ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
+	private Class classe;
 	
 	/** METHODES **/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
@@ -83,11 +84,11 @@ public class applicationServer{
     	if(nom_commande.equals("compilation")){
     		for(int i = 0; i < uneCommande.getTaille();i++){
     			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
-    			//traiterCompilation(cheminsource); //peu de chances que ça marche
+    			traiterCompilation(cheminsource);
     		}
     	}
     	else if(nom_commande.equals("chargement")){
-    		//traiterChargement(uneCommande.getNom_classe());
+    		traiterChargement(uneCommande.getNom_classe());
     	}
     	else if(nom_commande.equals("creation")){
     		if(uneCommande.getNom_classe().equals("ca.uqac.registraire.Cours")){
@@ -98,7 +99,9 @@ public class applicationServer{
     		}
     	}
     	else if(nom_commande.equals("lecture")){
-    		//traiterLecture(Object pointeurObjet, uneCommande.getNom_attribut());
+    		/*if(uneCommande.getIdentificateur().equals("ca.uqac.registraire.Cours")){
+    			traiterLecture(nouveau_cours, uneCommande.getNom_attribut());
+    		}*/
     	}
     	else if(nom_commande.equals("ecriture")){
     		//traiterEcriture(Object pointeurObjet, uneCommande.getNom_attribut(), Object valeur);
@@ -115,6 +118,9 @@ public class applicationServer{
 	* socket
     */
     public void traiterLecture(Object pointeurObjet, String attribut) {
+    	if(attribut.equals("")){
+    		//String titre = pointeurObjet.getTitre();
+    	}
     	
     }
     
@@ -133,6 +139,11 @@ public class applicationServer{
     public void traiterCreation(Class classeDeLobjet, String identificateur) {
     	if(classeDeLobjet == Etudiant.class){
     		Etudiant nouvel_etudiant = new Etudiant(identificateur);
+    		System.out.println("objet Etudiant bien créé");
+    	}
+    	else if(classeDeLobjet == Cours.class){
+    		Cours nouveau_cours = new Cours(identificateur);
+    		System.out.println("objet Cours bien créé");
     	}
     }
 
@@ -141,7 +152,12 @@ public class applicationServer{
 	* s’est faite correctement.
     */
     public void traiterChargement(String nomQualifie) {
-    	
+    	try {
+    		classe = Class.forName(nomQualifie);
+    		System.out.println("Classe chargée : " + nomQualifie);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     }
 
     /**
@@ -150,7 +166,19 @@ public class applicationServer{
 	* relatif par rapport au chemin des fichiers sources.
     */
     public void traiterCompilation(String cheminRelatifFichierSource) {
-    	
+    	String command = "javac " + cheminRelatifFichierSource;
+    	try {
+			Process pro = Runtime.getRuntime().exec(command);
+			try {
+				pro.waitFor();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     /**
