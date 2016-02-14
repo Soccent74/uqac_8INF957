@@ -1,4 +1,4 @@
-package ca.uqac.registraire;
+package uqac_8INF957;
 import java.util.*;
 
 /**
