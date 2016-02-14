@@ -1,6 +1,5 @@
 package uqac_8INF957;
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * @author Benjamin Bourgeaux et Lucas Helaine
