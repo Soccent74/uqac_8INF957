@@ -78,7 +78,10 @@ public class applicationServer{
         	// TODO Auto-generated catch block
         	e.printStackTrace();
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
     }
     
     /**
