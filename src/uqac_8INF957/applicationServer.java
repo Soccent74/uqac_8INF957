@@ -96,6 +96,7 @@ public class applicationServer{
     		System.out.println("Je suis rentre dans compilation");
     		for(int i = 0; i < uneCommande.getTaille();i++){
     			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
+    			System.out.println(cheminsource);
     			resultat = traiterCompilation(cheminsource);
     		}
     		//System.out.println("La compilation ne marche pas");
@@ -234,7 +235,7 @@ public class applicationServer{
     	String command = "javac " + cheminRelatifFichierSource;
     	try {
 			Process pro = Runtime.getRuntime().exec(command);
-			res = "La compilation a réussi";
+			res = "La compilation a réussie";
 			try {
 				pro.waitFor();
 			} catch (InterruptedException e) {
@@ -256,20 +257,34 @@ public class applicationServer{
     /**/
     public String traiterAppel(Object pointeurObjet, String nomFonction, String[] types, String[] valeurs) {
     	String res = "";
-    	if(nomFonction.equals("titre")){
-    		//nouveau_cours.setTitre(valeur); //MEGA CASSEGUEULE
-    		System.out.println("La valeur titre a été mis à jour");
-    		res = "La valeur titre a été mis à jour";
+    	if(nomFonction.equals("getNote")){
+    		//((Cours) pointeurObjet).getNote(valeur); //MEGA CASSEGUEULE
+    		System.out.println("La note a été récupérée");
+    		res = "La note a été récupérée";
     	}
-       	else if(nomFonction.equals("prenom")){
-    		//nouvel_etudiant.setNom(valeur); //MEGA CASSEGUEULE
-    		System.out.println("La valeur nom a été mis à jour");
-    		res = "La valeur nom a été mis à jour";
+    	else if(nomFonction.equals("attributeNote")){
+    		//((Cours) pointeurObjet).attributeNote(valeur); //MEGA CASSEGUEULE
+    		System.out.println("La note a été attribuée");
+    		res = "La note a été attribuée";
+    	}
+    	else if(nomFonction.equals("toString")){
+    		System.out.println("Voici le cours :" + ((Cours) pointeurObjet).toString());
+    		res = ((Cours) pointeurObjet).toString();
+    	}
+       	else if(nomFonction.equals("inscrisDansCours")){
+       		//((Etudiant) pointeurObjet).inscrisDansCours(valeur); //MEGA CASSEGUEULE
+    		System.out.println("L'étudiant a été inscrit");
+    		res = "L'étudiant a été inscrit";
        	}
+    	else if(nomFonction.equals("getMoyenne")){
+    		System.out.println("La moyenne est de : " + ((Etudiant) pointeurObjet).getMoyenne());
+    		res = Float.toString(((Etudiant) pointeurObjet).getMoyenne());
+    	}
+    	
     	return res;
     }
 
-	public static void main(String[] arg) {
+	public static void main(String[] args) {
 		applicationServer serv = new applicationServer(2009);
 		try {
 			serv.aVosOrdres();
