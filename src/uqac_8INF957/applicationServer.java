@@ -22,6 +22,8 @@ public class applicationServer{
 	Cours nouveau_cours;
 	private Cours[] tabcours = new Cours[tailletab];
 	private Etudiant[] tabetudiant = new Etudiant[tailletab];
+	static int compt_cours = 0;
+	static int compt_etud = 0;
 	
 	/** METHODES **/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
@@ -65,8 +67,8 @@ public class applicationServer{
 			/** On gère le flux de sortie du server qui sert aux confirmations. **/
 				out = new ObjectOutputStream(socketduserveur.getOutputStream());
 				out.flush();
-//				String accuser = traiteCommande(commandeRecu);
-				out.writeObject("Le serveur confirme le traitement de la commande sans incident.");
+				String accuser = traiteCommande(commandeRecu);
+				out.writeObject(accuser/*"Le serveur confirme le traitement de la commande sans incident."*/);
 				out.flush();
 
 				/** On ferme les flux et la socket. **/
@@ -83,133 +85,153 @@ public class applicationServer{
     /**
     * prend une Commande dument formattée, et la traite. Dépendant du type de commande, elle appelle la méthode spécialisée
     */
-    public void traiteCommande(Commande uneCommande) {
-    	
+    public String traiteCommande(Commande uneCommande) {
+    	String resultat = "";
     	String nom_commande;
     	nom_commande = uneCommande.getType_commande();
     	if(nom_commande.equals("compilation")){
     		System.out.println("Je suis rentre dans compilation");
     		for(int i = 0; i < uneCommande.getTaille();i++){
     			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
-    			traiterCompilation(cheminsource);
+    			resultat = traiterCompilation(cheminsource);
     		}
     		//System.out.println("La compilation ne marche pas");
     	}
     	else if(nom_commande.equals("chargement")){
     		System.out.println("Je suis rentre dans chargement");
-    		traiterChargement(uneCommande.getNom_classe());
+    		resultat = traiterChargement(uneCommande.getNom_classe());
     	}
     	else if(nom_commande.equals("creation")){
     		System.out.println("Je suis rentre dans creation");
-    		if(uneCommande.getNom_classe().equals("ca.uqac.registraire.Cours")){
-    			traiterCreation(Cours.class, uneCommande.getIdentificateur());
+    		if(uneCommande.getNom_classe().equals("uqac_8INF957.Cours")){
+    			resultat = traiterCreation(Cours.class, uneCommande.getIdentificateur());
     		}
-    		else if(uneCommande.getNom_classe().equals("ca.uqac.registraire.Etudiant")){
-    			traiterCreation(Etudiant.class, uneCommande.getIdentificateur());
+    		else if(uneCommande.getNom_classe().equals("uqac_8INF957.Etudiant")){
+    			resultat = traiterCreation(Etudiant.class, uneCommande.getIdentificateur());
     		}
     	}
     	else if(nom_commande.equals("lecture")){
     		System.out.println("Je suis rentre dans lecture");
-    		if(uneCommande.getIdentificateur().matches("[0-9]")){
-    			traiterLecture(nouveau_cours, uneCommande.getNom_attribut());
+    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){
+    			resultat = traiterLecture(tabcours[compt_cours-1], uneCommande.getNom_attribut());
     		}
     		else{
-    			traiterLecture(nouvel_etudiant, uneCommande.getNom_attribut());
+    			resultat = traiterLecture(tabetudiant[compt_etud-1], uneCommande.getNom_attribut());
     		}
     	}
     	else if(nom_commande.equals("ecriture")){
     		System.out.println("Je suis rentre dans ecriture");
-    		if(uneCommande.getIdentificateur().matches("[0-9]")){
-    			traiterEcriture(nouveau_cours, uneCommande.getNom_attribut(), uneCommande.getValeur());
+    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){
+    			resultat = traiterEcriture(tabcours[compt_cours-1], uneCommande.getNom_attribut(), uneCommande.getValeur());
     		}
     		else{
-    			traiterEcriture(nouvel_etudiant, uneCommande.getNom_attribut(), uneCommande.getValeur());
+    			resultat = traiterEcriture(tabetudiant[compt_etud-1], uneCommande.getNom_attribut(), uneCommande.getValeur());
     		}
     	}
     	else if(nom_commande.equals("fonction")){
     		System.out.println("Je suis rentre dans fonction");
-    		if(uneCommande.getIdentificateur().matches("[0-9]")){
-    			traiterAppel(nouveau_cours, uneCommande.getNom_fonction(), uneCommande.getTabpar(), uneCommande.getTabval());
+    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){
+    			resultat = traiterAppel(tabcours[compt_cours-1], uneCommande.getNom_fonction(), uneCommande.getTabpar(), uneCommande.getTabval());
     		}
     		else{
-    			traiterAppel(nouvel_etudiant, uneCommande.getNom_fonction(), uneCommande.getTabpar(), uneCommande.getTabval());
+    			resultat = traiterAppel(tabetudiant[compt_etud-1], uneCommande.getNom_fonction(), uneCommande.getTabpar(), uneCommande.getTabval());
     		}
     	}
     	else{
     		System.out.println("Erreur dans la commande");
     	}
+    	return resultat;
     }
     /**
     * traiterLecture : traite la lecture d’un attribut. Renvoies le résultat par le socket
     */
-    public void traiterLecture(Object pointeurObjet, String attribut) {
+    public String traiterLecture(Object pointeurObjet, String attribut) {
+    	String res = "";
     	if(attribut.equals("titre")){
-    		String titre = nouveau_cours.getTitre(); //MEGA CASSEGUEULE
-    		System.out.println(titre);
+    		res = ((Cours) pointeurObjet).getTitre();
+    		System.out.println(res);
     	}
     	else if(attribut.equals("prenom")){
-    		String nom = nouvel_etudiant.getNom(); //MEGA CASSEGUEULE
-    		System.out.println(nom);
+    		res = ((Etudiant) pointeurObjet).getNom();
+    		System.out.println(res);
     	}
+    	return res;
     }
     /**
     * traiterEcriture : traite l’écriture d’un attribut. Confirmes au client que l’écriture s’est faite correctement.
     */
-    public void traiterEcriture(Object pointeurObjet, String attribut, String valeur) {
+    public String traiterEcriture(Object pointeurObjet, String attribut, String valeur) {
+    	String res = "";
     	if(attribut.equals("titre")){
-    		nouveau_cours.setTitre(valeur); //MEGA CASSEGUEULE
+    		((Cours) pointeurObjet).setTitre(valeur);
     		System.out.println("La valeur titre a été mis à jour");
+    		res = "La valeur titre a été mis à jour";
     	}
        	else if((attribut.equals("prenom")||attribut.equals("nom"))){
-    		nouvel_etudiant.setNom(valeur); //MEGA CASSEGUEULE
+       		((Etudiant) pointeurObjet).setNom(valeur);
     		System.out.println("La valeur nom a été mis à jour");
+    		res = "La valeur nom a été mis à jour";
        	}
+    	return res;
     }
     /**
     * traiterCreation : traite la création d’un objet. Confirme au client que la création s’est faite correctement.
     */
-    public void traiterCreation(Class classeDeLobjet, String identificateur) {
-    	int i = 0;
-    	if(classeDeLobjet == Etudiant.class){
-    		nouvel_etudiant = new Etudiant(identificateur);//mettre en attribut puis mettre à jour
-    		tabetudiant[i] = nouvel_etudiant;
-    		System.out.println("objet Etudiant bien créé");
-    		i++;
-    		if(i > tailletab){
-    			System.out.println("Il y a trop d'etudiants");
-    		}
+    public String traiterCreation(Class classeDeLobjet, String identificateur) {
+    	String res = "";
+    	if(compt_etud > tailletab){
+    		System.out.println("Il y a trop d'etudiants");
+    		res = "Il y a trop d'etudiants";
+		}
+    	else if(compt_cours > tailletab){
+    		System.out.println("Il y a trop de cours");
+    		res = "Il y a trop de cours";
     	}
-    	else if(classeDeLobjet == Cours.class){
-    		int j = 0;
-    		nouveau_cours = new Cours(identificateur);
-    		tabcours[j] = nouveau_cours;
-    		System.out.println("objet Cours bien créé");
-    		j++;
-    		if(j > tailletab){
-    			System.out.println("Il y a trop de cours");
-    		}
+    	else{
+    		if(classeDeLobjet == Etudiant.class){
+        		nouvel_etudiant = new Etudiant(identificateur);//mettre en attribut puis mettre à jour
+        		tabetudiant[compt_etud] = nouvel_etudiant;
+        		System.out.println("objet Etudiant bien créé");
+        		nouvel_etudiant = null;
+        		compt_etud++;
+        		res = "L'objet Etudiant a été créé";
+        	}
+        	else if(classeDeLobjet == Cours.class){
+        		nouveau_cours = new Cours(identificateur);
+        		tabcours[compt_cours] = nouveau_cours;
+        		System.out.println("objet Cours bien créé");
+        		nouveau_cours = null;
+        		compt_cours++;
+        		res = "L'objet Cours a été créé";
+        	}
     	}
+    	return res;
     }
     /**
     * traiterChargement : traite le chargement d’une classe. Confirmes au client que la création s’est faite correctement.
     */
-    public void traiterChargement(String nomQualifie) {
+    public String traiterChargement(String nomQualifie) {
+    	String res = "";
     	try {
     		classe = Class.forName(nomQualifie);
     		System.out.println("Classe chargée : " + nomQualifie);
+    		res = "La classe a été chargée";
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
+    	return res;
     }
     /**
     * traiterCompilation : traite la compilation d’un fichier source java. Confirme au client
 	* que la compilation s’est faite correctement. Le fichier source est donné par son chemin
 	* relatif par rapport au chemin des fichiers sources.
     */
-    public void traiterCompilation(String cheminRelatifFichierSource) {
+    public String traiterCompilation(String cheminRelatifFichierSource) {
+    	String res = "";
     	String command = "javac " + cheminRelatifFichierSource;
     	try {
 			Process pro = Runtime.getRuntime().exec(command);
+			res = "La compilation a réussi";
 			try {
 				pro.waitFor();
 			} catch (InterruptedException e) {
@@ -220,6 +242,7 @@ public class applicationServer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	return res;
     }
     /**
     * traiterAppel : traite l’appel d’une méthode, en prenant comme argument l’objet
@@ -228,15 +251,19 @@ public class applicationServer{
 	* fonction est renvoyé par le serveur au client (ou le message que tout s’est bien 
 	* passé)
     /**/
-    public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, String[] valeurs) {
+    public String traiterAppel(Object pointeurObjet, String nomFonction, String[] types, String[] valeurs) {
+    	String res = "";
     	if(nomFonction.equals("titre")){
     		//nouveau_cours.setTitre(valeur); //MEGA CASSEGUEULE
     		System.out.println("La valeur titre a été mis à jour");
+    		res = "La valeur titre a été mis à jour";
     	}
        	else if(nomFonction.equals("prenom")){
     		//nouvel_etudiant.setNom(valeur); //MEGA CASSEGUEULE
     		System.out.println("La valeur nom a été mis à jour");
+    		res = "La valeur nom a été mis à jour";
        	}
+    	return res;
     }
 
 	public static void main(String[] arg) {

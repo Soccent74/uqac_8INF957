@@ -127,7 +127,7 @@ public class applicationClient {
     * PROGRAMME PRINCIPALE : Cette méthode doit créer une instance de la classe ApplicationClient, 
     * l’initialiser, ouvrir le fichier commandes.txt et demander au server d'exécuter les commandes.
     */
-    public static void main(String[] zero) {
+    public static void main(String[] arg) {
     /** Création de l'instance et initialisation. **/	
     	applicationClient client = new applicationClient();
     	client.setFichier("commandes.txt");
