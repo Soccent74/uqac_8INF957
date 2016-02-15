@@ -7,6 +7,8 @@ import java.io.*;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.omg.Messaging.SyncScopeHelper;
 /**
@@ -256,16 +258,75 @@ public class applicationServer{
 	* passé)
     /**/
     public String traiterAppel(Object pointeurObjet, String nomFonction, String[] types, String[] valeurs) {
+
     	String res = "";
     	if(nomFonction.equals("getNote")){
-    		//((Cours) pointeurObjet).getNote(valeur); //MEGA CASSEGUEULE
-    		System.out.println("La note a été récupérée");
-    		res = "La note a été récupérée";
+    		String param = valeurs[0];
+    		System.out.println(param);
+    		Pattern p = Pattern.compile("ID(.(.*).)");
+    		Matcher m = p.matcher(param);
+    		String nometud = "";
+    		float test = 0;
+    		while(m.find()){
+    			nometud = m.group(2);
+    		}
+    		int i = 0;
+    		boolean flag = false;
+    		while((flag != true) && (i < compt_etud)){
+    			if(tabetudiant[i].getNom().equals(nometud)){
+    				flag = true;
+    			}
+    			else{
+    				i++;
+    			}
+    		}
+    		try{
+    			test = ((Cours) pointeurObjet).getNote(tabetudiant[i]);
+    			System.out.println("La note a été récupérée : " + test);
+    			res = "La note a été récupérée : " + test;
+    		}
+    		catch (Exception e){
+    			System.out.println("Pas de notes");
+    			res = "La note n'a pas été récupérée";
+    		}
     	}
+    	
     	else if(nomFonction.equals("attributeNote")){
-    		//((Cours) pointeurObjet).attributeNote(valeur); //MEGA CASSEGUEULE
-    		System.out.println("La note a été attribuée");
-    		res = "La note a été attribuée";
+    		String param = "";
+    		float val = 0;
+    		if(types[0].equals("uqac_8INF957.Etudiant")){
+    			param = valeurs[0];
+    		}
+    		val = Float.parseFloat(valeurs[1]);
+    		System.out.println(param);
+    		System.out.println(val);
+    		Pattern p = Pattern.compile("ID(.(.*).)");
+    		Matcher m = p.matcher(param);
+    		String nometud = "";
+    		while(m.find()){
+    			nometud = m.group(2);
+    		}
+    		int i = 0;
+    		System.out.println(nometud);
+    		boolean flag = false;
+    		System.out.println(tabetudiant[i].getNom());
+    		while((flag != true) && (i < compt_etud)){
+    			if(tabetudiant[i].getNom().equals(nometud)){
+    				flag = true;
+    			}
+    			else{
+    				i++;
+    			}
+    		}
+    		try{
+    			((Cours) pointeurObjet).attributeNote(tabetudiant[i], val);
+    			System.out.println("La note a été attribuée : " + val + " à " + tabetudiant[i].getNom());
+    			res = "La note a été attribuée";
+    		}
+    		catch (Exception e){
+    			System.out.println("Erreur de notes");
+    		}
+    		
     	}
     	else if(nomFonction.equals("toString")){
     		System.out.println("Voici le cours :" + ((Cours) pointeurObjet).toString());
