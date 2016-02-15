@@ -23,7 +23,7 @@ public class Commande implements Serializable {
 	private int nb_args = 0; //Nombre d'arguments dans la commande
 	private int nb_param = 0; //Nombre de parametres
 
-	/** METHODES **/
+	/** Constructeur de la classe. **/
 	public Commande(String commande){ //Constructeur de la classe Commande
 
 		String[] str = commande.split("#"); //Separation de la commande en fonction du caractere #

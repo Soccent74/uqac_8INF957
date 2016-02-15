@@ -62,7 +62,10 @@ public class applicationServer{
 				// Affichage du type de commande pour contrôle réception.
 				System.out.println("Serveur recoit: " + commandeRecu.getType_commande());
 				
-			/** On gère le flux de sortie du server qui sert aux confirmations. **/
+			/** On gère le flux de sortie du server qui sert aux confirmations. 
+			 *  C'est dans traite commande que l'on fait appel à la procédure de 
+			 *  traitement de la commande.
+			 * **/
 				out = new ObjectOutputStream(socketduserveur.getOutputStream());
 				out.flush();
 //				String accuser = traiteCommande(commandeRecu);
