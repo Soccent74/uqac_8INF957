@@ -1,11 +1,6 @@
-/**
- * 
- */
 package uqac_8INF957;
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
-
 import uqac_8INF957.Commande;
 /**
  * @author Benjamin Bourgeaux et Lucas Hélaine
@@ -13,7 +8,9 @@ import uqac_8INF957.Commande;
  */
 public class applicationClient {
     
-	/** ATTRIBUT **/
+	/*****************************
+	 * ATTRIBUTS
+	 ****************************/
 	private String fichier;
 	private String fichSortie;
 	private BufferedReader br;
@@ -56,7 +53,6 @@ public class applicationClient {
 	/*******************************
 	 * METHODES
 	 ******************************/
-	
 	/**
 	*	prend le fichier contenant la liste des commandes, et le charge dans une
     * 	variable du type Commande qui est retournée
@@ -92,7 +88,7 @@ public class applicationClient {
 			socket = new Socket(InetAddress.getLocalHost(), 2009);
 			System.out.println("Socket client: " + socket);
 			
-			/** Gestion de l'envoie de la commande. **/
+			/** Gestion de l'envoi de la commande. **/
 			// OUT : Création d'un stream d'objet avec un stream de socket. 
 			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 	        out.flush();					// On vide le buffer.
@@ -124,8 +120,8 @@ public class applicationClient {
 		}      
     }
     /**
-    * PROGRAMME PRINCIPALE : Cette méthode doit créer une instance de la classe ApplicationClient, 
-    * l’initialiser, ouvrir le fichier commandes.txt et demander au server d'exécuter les commandes.
+    * PROGRAMME PRINCIPAL : Cette méthode doit créer une instance de la classe ApplicationClient, 
+    * l’initialiser, ouvrir le fichier commandes.txt et demander au serveur d'exécuter les commandes.
     */
     public static void main(String[] args) {
     /** Création de l'instance et initialisation. **/	

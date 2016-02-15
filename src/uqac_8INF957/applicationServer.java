@@ -1,47 +1,47 @@
-/**
- * 
- */
 package uqac_8INF957;
-import uqac_8INF957.*;
 import java.io.*;
 import java.io.IOException;
 import java.net.*;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.omg.Messaging.SyncScopeHelper;
 /**
  * @author Benjamin Bourgeaux et Lucas Hélaine
- *
  */
 public class applicationServer{
-	/**ATTRIBUT **/
+	
+	/*******************************
+	 * ATTRIBUTS
+	 ******************************/
 	public ServerSocket socketserver; // Static pour être disponible partout pour toutes les instances.
 	private Class classe;
 	private int tailletab = 2;
-	Etudiant nouvel_etudiant;
-	Cours nouveau_cours;
-	private Cours[] tabcours = new Cours[tailletab];
-	private Etudiant[] tabetudiant = new Etudiant[tailletab];
-	static int compt_cours = 0;
-	static int compt_etud = 0;
+	Etudiant nouvel_etudiant; //Objet Etudiant
+	Cours nouveau_cours; //Objet Cours
+	private Cours[] tabcours = new Cours[tailletab]; //Tableau des cours
+	private Etudiant[] tabetudiant = new Etudiant[tailletab]; //Tableau des étudiants
+	static int compt_cours = 0; //Compteur de cours
+	static int compt_etud = 0; //Compteur d'étudiants
 	
-	/** METHODES **/
+	/*******************************
+	 * CONSTRUCTEUR
+	 ******************************/
 	public applicationServer(int port){ //prend le numéro de port, crée un SocketServer sur le port
 		try {
-	    	socketserver = new ServerSocket(port);
+	    	socketserver = new ServerSocket(port); //Instanciation du socket
 	    	System.out.println("Server : Socket créé");
-//	    	aVosOrdres();
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	/*******************************
+	 * METHODES
+	 ******************************/
     /**
     * Se met en attente de connexions des clients. Suite aux connexions, elle lit
     * ce qui est envoyé à travers la Socket, recrée l’objet Commande envoyé par
     * le client, et appellera traiterCommande(Commande uneCommande)
-     * @throws ClassNotFoundException 
+    * @throws ClassNotFoundException 
     */         
     public void aVosOrdres() throws ClassNotFoundException {
     /** Variable de la fonction. **/
@@ -51,11 +51,11 @@ public class applicationServer{
         ObjectInputStream in;
         ObjectOutputStream out;
 		
-    /** On essaye d'accepter les connections et de recevoir, traiter, renvoyer les données. **/
+    /** On essaye d'accepter les connexions et de recevoir, traiter, renvoyer les données. **/
         try {
         /** Boucle permettant d'ouvrir une nouvelle socket pour chaque commande du client.  **/
 			do{
-				// On accepte les connections entrantes. 
+				// On accepte les connexions entrantes. 
 				socketduserveur = this.socketserver.accept();
 				System.out.println("Serveur a accepte connexion: " + socketduserveur);
 				
@@ -67,13 +67,13 @@ public class applicationServer{
 				System.out.println("Serveur recoit: " + commandeRecu.getType_commande());
 				
 			/** On gère le flux de sortie du server qui sert aux confirmations. 
-			 *  C'est dans traite commande que l'on fait appel à la procédure de 
+			 *  C'est dans traiteCommande que l'on fait appel à la procédure de 
 			 *  traitement de la commande.
 			 * **/
 				out = new ObjectOutputStream(socketduserveur.getOutputStream());
 				out.flush();
 				String accuser = traiteCommande(commandeRecu);
-				out.writeObject(accuser/*"Le serveur confirme le traitement de la commande sans incident."*/);
+				out.writeObject(accuser);
 				out.flush();
 
 				/** On ferme les flux et la socket. **/
@@ -88,12 +88,13 @@ public class applicationServer{
     }
     
     /**
-    * prend une Commande dument formattée, et la traite. Dépendant du type de commande, elle appelle la méthode spécialisée
+    * prend une Commande dûment formattée, et la traite. Dépendant du type de commande, elle appelle la méthode spécialisée
     */
     public String traiteCommande(Commande uneCommande) {
     	String resultat = "";
     	String nom_commande;
     	nom_commande = uneCommande.getType_commande();
+    	/** Appel de la compilation **/
     	if(nom_commande.equals("compilation")){
     		/*System.out.println("Je suis rentre dans compilation");
     		for(int i = 0; i < uneCommande.getTaille();i++){
@@ -103,40 +104,45 @@ public class applicationServer{
     		}*/
     		System.out.println("La compilation ne marche pas");
     	}
+    	/** Appel du chargement **/
     	else if(nom_commande.equals("chargement")){
     		System.out.println("Je suis rentre dans chargement");
     		resultat = traiterChargement(uneCommande.getNom_classe());
     	}
+    	/** Appel de la creation **/
     	else if(nom_commande.equals("creation")){
     		System.out.println("Je suis rentre dans creation");
-    		if(uneCommande.getNom_classe().equals("uqac_8INF957.Cours")){
+    		if(uneCommande.getNom_classe().equals("uqac_8INF957.Cours")){ //Teste l'objet à créer
     			resultat = traiterCreation(Cours.class, uneCommande.getIdentificateur());
     		}
     		else if(uneCommande.getNom_classe().equals("uqac_8INF957.Etudiant")){
     			resultat = traiterCreation(Etudiant.class, uneCommande.getIdentificateur());
     		}
     	}
+    	/** Appel de la lecture **/
     	else if(nom_commande.equals("lecture")){
     		System.out.println("Je suis rentre dans lecture");
-    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){
+    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){ //Teste si c'est un cours
     			resultat = traiterLecture(tabcours[compt_cours-1], uneCommande.getNom_attribut());
     		}
     		else{
     			resultat = traiterLecture(tabetudiant[compt_etud-1], uneCommande.getNom_attribut());
     		}
     	}
+    	/** Appel de l'écriture **/
     	else if(nom_commande.equals("ecriture")){
     		System.out.println("Je suis rentre dans ecriture");
-    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){
+    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){ //Teste si c'est un cours
     			resultat = traiterEcriture(tabcours[compt_cours-1], uneCommande.getNom_attribut(), uneCommande.getValeur());
     		}
     		else{
     			resultat = traiterEcriture(tabetudiant[compt_etud-1], uneCommande.getNom_attribut(), uneCommande.getValeur());
     		}
     	}
+    	/** Appel du lancement de fonction **/
     	else if(nom_commande.equals("fonction")){
     		System.out.println("Je suis rentre dans fonction");
-    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){
+    		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){ //Teste si c'est un cours
     			resultat = traiterAppel(tabcours[compt_cours-1], uneCommande.getNom_fonction(), uneCommande.getTabpar(), uneCommande.getTabval());
     		}
     		else{
@@ -154,11 +160,11 @@ public class applicationServer{
     public String traiterLecture(Object pointeurObjet, String attribut) {
     	String res = "";
     	if(attribut.equals("titre")){
-    		res = ((Cours) pointeurObjet).getTitre();
+    		res = ((Cours) pointeurObjet).getTitre(); //Récupère le titre
     		System.out.println(res);
     	}
     	else if(attribut.equals("prenom")){
-    		res = ((Etudiant) pointeurObjet).getNom();
+    		res = ((Etudiant) pointeurObjet).getNom(); //Récupère le nom
     		System.out.println(res);
     	}
     	return res;
@@ -353,7 +359,6 @@ public class applicationServer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }// Fin du main.
-	
+    }
 }
 
