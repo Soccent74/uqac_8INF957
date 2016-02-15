@@ -86,7 +86,6 @@ public class applicationServer{
         	e.printStackTrace();
         }
     }
-    
     /**
     * prend une Commande dûment formattée, et la traite. Dépendant du type de commande, elle appelle la méthode spécialisée
     */
@@ -96,8 +95,7 @@ public class applicationServer{
     	nom_commande = uneCommande.getType_commande();
     	/** Appel de la compilation **/
     	if(nom_commande.equals("compilation")){
-    		/*System.out.println("Je suis rentre dans compilation");
-    		for(int i = 0; i < uneCommande.getTaille();i++){
+    		/*for(int i = 0; i < uneCommande.getTaille();i++){
     			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
     			System.out.println(cheminsource);
     			resultat = traiterCompilation(cheminsource);
@@ -106,12 +104,10 @@ public class applicationServer{
     	}
     	/** Appel du chargement **/
     	else if(nom_commande.equals("chargement")){
-    		System.out.println("Je suis rentre dans chargement");
     		resultat = traiterChargement(uneCommande.getNom_classe());
     	}
     	/** Appel de la creation **/
     	else if(nom_commande.equals("creation")){
-    		System.out.println("Je suis rentre dans creation");
     		if(uneCommande.getNom_classe().equals("uqac_8INF957.Cours")){ //Teste l'objet à créer
     			resultat = traiterCreation(Cours.class, uneCommande.getIdentificateur());
     		}
@@ -121,7 +117,6 @@ public class applicationServer{
     	}
     	/** Appel de la lecture **/
     	else if(nom_commande.equals("lecture")){
-    		System.out.println("Je suis rentre dans lecture");
     		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){ //Teste si c'est un cours
     			resultat = traiterLecture(tabcours[compt_cours-1], uneCommande.getNom_attribut());
     		}
@@ -131,7 +126,6 @@ public class applicationServer{
     	}
     	/** Appel de l'écriture **/
     	else if(nom_commande.equals("ecriture")){
-    		System.out.println("Je suis rentre dans ecriture");
     		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){ //Teste si c'est un cours
     			resultat = traiterEcriture(tabcours[compt_cours-1], uneCommande.getNom_attribut(), uneCommande.getValeur());
     		}
@@ -141,7 +135,6 @@ public class applicationServer{
     	}
     	/** Appel du lancement de fonction **/
     	else if(nom_commande.equals("fonction")){
-    		System.out.println("Je suis rentre dans fonction");
     		if(uneCommande.getIdentificateur().matches("[0-9]+[a-zA-Z]+[0-9]+")){ //Teste si c'est un cours
     			resultat = traiterAppel(tabcours[compt_cours-1], uneCommande.getNom_fonction(), uneCommande.getTabpar(), uneCommande.getTabval());
     		}
@@ -175,12 +168,12 @@ public class applicationServer{
     public String traiterEcriture(Object pointeurObjet, String attribut, String valeur) {
     	String res = "";
     	if(attribut.equals("titre")){
-    		((Cours) pointeurObjet).setTitre(valeur);
+    		((Cours) pointeurObjet).setTitre(valeur); //Change le titre
     		System.out.println("La valeur titre a été mis à jour");
     		res = "La valeur titre a été mis à jour";
     	}
        	else if((attribut.equals("prenom")||attribut.equals("nom"))){
-       		((Etudiant) pointeurObjet).setNom(valeur);
+       		((Etudiant) pointeurObjet).setNom(valeur); //Change le nom
     		System.out.println("La valeur nom a été mis à jour");
     		res = "La valeur nom a été mis à jour";
        	}
@@ -191,17 +184,17 @@ public class applicationServer{
     */
     public String traiterCreation(Class classeDeLobjet, String identificateur) {
     	String res = "";
-    	if(compt_etud > tailletab){
+    	if(compt_etud > tailletab){ //S'il y a trop d'étudiants
     		System.out.println("Il y a trop d'etudiants");
     		res = "Il y a trop d'etudiants";
 		}
-    	else if(compt_cours > tailletab){
+    	else if(compt_cours > tailletab){ //S'il y a trop de cours
     		System.out.println("Il y a trop de cours");
     		res = "Il y a trop de cours";
     	}
     	else{
     		if(classeDeLobjet == Etudiant.class){
-        		nouvel_etudiant = new Etudiant(identificateur);//mettre en attribut puis mettre à jour
+        		nouvel_etudiant = new Etudiant(identificateur); //Instanciation d'un étudiant
         		tabetudiant[compt_etud] = nouvel_etudiant;
         		System.out.println("objet Etudiant bien créé");
         		nouvel_etudiant = null;
@@ -209,7 +202,7 @@ public class applicationServer{
         		res = "L'objet Etudiant a été créé";
         	}
         	else if(classeDeLobjet == Cours.class){
-        		nouveau_cours = new Cours(identificateur);
+        		nouveau_cours = new Cours(identificateur); //Instanciation d'un cours
         		tabcours[compt_cours] = nouveau_cours;
         		System.out.println("objet Cours bien créé");
         		nouveau_cours = null;
@@ -225,7 +218,7 @@ public class applicationServer{
     public String traiterChargement(String nomQualifie) {
     	String res = "";
     	try {
-    		classe = Class.forName(nomQualifie);
+    		classe = Class.forName(nomQualifie); //Charge la classe
     		System.out.println("Classe chargée : " + nomQualifie);
     		res = "La classe a été chargée";
     	} catch (Exception e) {
@@ -240,7 +233,7 @@ public class applicationServer{
     */
     public String traiterCompilation(String cheminRelatifFichierSource) {
     	String res = "";
-    	String command = "javac " + cheminRelatifFichierSource;
+    	String command = "javac " + cheminRelatifFichierSource; //Commande à compiler
     	try {
 			Process pro = Runtime.getRuntime().exec(command);
 			res = "La compilation a réussie";
@@ -264,11 +257,9 @@ public class applicationServer{
 	* passé)
     /**/
     public String traiterAppel(Object pointeurObjet, String nomFonction, String[] types, String[] valeurs) {
-
     	String res = "";
     	if(nomFonction.equals("getNote")){
     		String param = valeurs[0];
-    		System.out.println(param);
     		Pattern p = Pattern.compile("ID(.(.*).)");
     		Matcher m = p.matcher(param);
     		String nometud = "";
@@ -304,8 +295,6 @@ public class applicationServer{
     			param = valeurs[0];
     		}
     		val = Float.parseFloat(valeurs[1]);
-    		System.out.println(param);
-    		System.out.println(val);
     		Pattern p = Pattern.compile("ID(.(.*).)");
     		Matcher m = p.matcher(param);
     		String nometud = "";
@@ -313,9 +302,7 @@ public class applicationServer{
     			nometud = m.group(2);
     		}
     		int i = 0;
-    		System.out.println(nometud);
     		boolean flag = false;
-    		System.out.println(tabetudiant[i].getNom());
     		while((flag != true) && (i < compt_etud)){
     			if(tabetudiant[i].getNom().equals(nometud)){
     				flag = true;
@@ -339,18 +326,21 @@ public class applicationServer{
     		res = ((Cours) pointeurObjet).toString();
     	}
        	else if(nomFonction.equals("inscrisDansCours")){
-       		//((Etudiant) pointeurObjet).inscrisDansCours(valeur); //MEGA CASSEGUEULE
-    		System.out.println("L'étudiant a été inscrit");
+       		/*((Etudiant) pointeurObjet).inscrisDansCours(valeur);
+    		System.out.println("L'étudiant a été inscrit");*/
+       		System.out.println("L'inscription ne fonctionne pas");
     		res = "L'étudiant a été inscrit";
        	}
     	else if(nomFonction.equals("getMoyenne")){
     		System.out.println("La moyenne est de : " + ((Etudiant) pointeurObjet).getMoyenne());
     		res = Float.toString(((Etudiant) pointeurObjet).getMoyenne());
     	}
-    	
     	return res;
     }
-
+    
+    /*******************************
+	 * MAIN
+	 ******************************/
 	public static void main(String[] args) {
 		applicationServer serv = new applicationServer(2009);
 		try {

@@ -135,7 +135,6 @@ public class applicationClient {
 			String ligne;
 			// Tant que ligne n'est pas null (fin du fichier de commande), on envoie la commande au serveur. 
 			while ((ligne=client.br.readLine())!=null){
-				System.out.println("client ligne = : " + ligne);
 				client.setProchaine(client.saisisCommande(ligne));
 				System.out.println("CLIENT :" + client.getProchaine());
 				// On appelle la commande qui va envoyer l'information au serveur. 
