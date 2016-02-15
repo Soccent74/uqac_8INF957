@@ -95,13 +95,13 @@ public class applicationServer{
     	String nom_commande;
     	nom_commande = uneCommande.getType_commande();
     	if(nom_commande.equals("compilation")){
-    		System.out.println("Je suis rentre dans compilation");
+    		/*System.out.println("Je suis rentre dans compilation");
     		for(int i = 0; i < uneCommande.getTaille();i++){
     			String cheminsource = Arrays.toString(uneCommande.getChemin_source());
     			System.out.println(cheminsource);
     			resultat = traiterCompilation(cheminsource);
-    		}
-    		//System.out.println("La compilation ne marche pas");
+    		}*/
+    		System.out.println("La compilation ne marche pas");
     	}
     	else if(nom_commande.equals("chargement")){
     		System.out.println("Je suis rentre dans chargement");
